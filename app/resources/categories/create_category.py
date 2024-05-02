@@ -4,6 +4,8 @@ This file contains Flask-RESTx resources for "post" category-related operations.
 from flask_restx import Resource
 from app.models.category import CategoryModel
 from app.repositories import CategoryRepository
+import re
+import unicodedata
 
 from . import categories
 from . args_categories import args_for_categories_endpoint as args_params
@@ -23,6 +25,12 @@ class CreateCategory(Resource):
         """
         data = args_params.parse_args()
         data['name'] = data['name'].upper()
+        url_name = "".join(c for c in unicodedata.normalize('NFD', data['name']) if unicodedata.category(c) != 'Mn')
+
+        url_name = url_name.replace(' ', '_')
+        url_name = url_name.replace(',', '')
+
+        data['url_name'] = url_name
 
         if self.category_repository.find_category_by_name(category_name=data['name']):
             return {"error": f"The category name '{data['name']}' already exists in database."}, 409

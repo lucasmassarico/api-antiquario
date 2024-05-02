@@ -11,7 +11,8 @@ class CategoryModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False, index=True)
+    url_name = db.Column(db.String(150), nullable=False)
     discount = db.Column(db.Float, default=0)
 
     def __repr__(self) -> str:
-        self.name
+        f"{self.name}"

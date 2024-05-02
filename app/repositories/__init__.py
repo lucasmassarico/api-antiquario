@@ -169,5 +169,6 @@ class CategoryRepository:
         return {
             "id": category.id,
             "name": category.name,
+            "url_name": category.url_name,
             "discount": category.discount
         }
