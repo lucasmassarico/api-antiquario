@@ -57,7 +57,7 @@ class ProductRepository:
 
     @staticmethod
     def update_product(product: ProductModel,
-                       name:str,
+                       name: str,
                        id_category: int,
                        description: str,
                        price: float,
@@ -104,7 +104,7 @@ class ProductRepository:
             "price": product.price,
             "stock_quantity": product.stock_quantity,
             "activated": product.activated,
-            "publication_date": str(product.publication_date)
+            "publication_date": str(product.publication_date.strftime("%d-%m-%Y %H:%M:%S"))
         }
 
 
@@ -168,5 +168,6 @@ class CategoryRepository:
     def json(category: CategoryModel) -> dict:
         return {
             "id": category.id,
-            "name": category.name
+            "name": category.name,
+            "discount": category.discount
         }

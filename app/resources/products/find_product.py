@@ -19,7 +19,7 @@ class FindProductById(Resource):
         """
         product = self.product_repository.find_product_by_id(product_id=product_id)
         if product:
-            return {"product": self.product_repository.json(product=product)}, 200
+            return self.product_repository.json(product=product), 200
         return {"error": "Product not found."}, 404
 
 
@@ -38,7 +38,7 @@ class FindProductByName(Resource):
         product = self.product_repository.find_products_by_name(product_name=product_name)
 
         if product:
-            return {"product": self.product_repository.json(product=product)}, 200
+            return self.product_repository.json(product=product), 200
         return {"error": "Product not found."}, 404
 
 
@@ -63,7 +63,7 @@ class FindAllProducts(Resource):
         for product in products_types:
             products_to_json.append(self.product_repository.json(product=product))
 
-        return {"products": products_to_json}, 200
+        return products_to_json, 200
 
 
 @products.route("/find/by_category_id/<int:category_id>")
@@ -95,4 +95,4 @@ class FindProductsByCategoryId(Resource):
         for product in products_type:
             products_to_json.append(self.product_repository.json(product=product))
 
-        return {"products": products_to_json}, 200
+        return products_to_json, 200

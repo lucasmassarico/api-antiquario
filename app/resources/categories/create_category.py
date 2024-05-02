@@ -31,6 +31,6 @@ class CreateCategory(Resource):
 
         try:
             self.category_repository.add_category(category=category)
-            return {"message": self.category_repository.json(category=category)}, 201
+            return self.category_repository.json(category=category), 201
         except Exception as error:
             return {"error": error}, 500

@@ -20,7 +20,7 @@ class FindCategoryById(Resource):
         """
         category = self.category_repository.find_category_by_id(category_id=category_id)
         if category:
-            return {"category": self.category_repository.json(category=category)}
+            return self.category_repository.json(category=category), 200
         return {"error": "Category not found."}, 404
 
 
@@ -39,7 +39,7 @@ class FindCategoryByName(Resource):
         category = self.category_repository.find_category_by_name(category_name=category_name)
 
         if category:
-            return {"category": self.category_repository.json(category=category)}, 200
+            return self.category_repository.json(category=category), 200
 
         return {"error": "Category not found."}, 404
 
@@ -65,4 +65,4 @@ class FindAllCategories(Resource):
         for category in categories_type:
             categories_to_json.append(self.category_repository.json(category=category))
 
-        return {"categories": categories_to_json}, 200
+        return categories_to_json, 200

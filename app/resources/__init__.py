@@ -6,6 +6,8 @@ This module includes a function 'init_app' that adds multiple namespaces to a Fl
 from app.resources.products import products as products_ns
 from app.resources.categories import categories as categories_ns
 
+from app.resources.testandoImagem import imagens as imagens_ns
+
 
 def init_app(api):
     """
@@ -13,3 +15,6 @@ def init_app(api):
     """
     api.add_namespace(products_ns, path="/products")
     api.add_namespace(categories_ns, path="/categories")
+
+    # apenas teste
+    api.add_namespace(imagens_ns, path="/imagens")

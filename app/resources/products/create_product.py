@@ -36,6 +36,6 @@ class CreateProduct(Resource):
 
         try:
             self.product_repository.add_product(product=product)
-            return {"message": self.product_repository.json(product=product)}, 201
+            return self.product_repository.json(product=product), 201
         except Exception as error:
             return {"error": error}, 500
