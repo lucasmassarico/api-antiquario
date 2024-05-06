@@ -4,6 +4,7 @@ from flask_restx import Resource
 from . import imagens
 from .args_imagens import args_for_images_endpoint as args_params
 
+UPLOAD_FOLDER = 'uploads'
 
 @imagens.route("/upload")
 class UploadImage(Resource):
