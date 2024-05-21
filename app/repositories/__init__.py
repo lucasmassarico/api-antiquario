@@ -127,11 +127,18 @@ class ProductImagesRepository:
         db.session.commit()
 
     @staticmethod
-    def find_product_image_by_product_id(product_id: int) -> ProductImagesModel:
+    def find_product_image_by_product_id(product_id: int) -> [ProductImagesModel]:
         """
         Retrieve a product imagem by product ID from the database.
         """
         return ProductImagesModel.query.filter_by(id_product=product_id).all()
+
+    @staticmethod
+    def find_product_image_by_id(product_image_id: int):
+        """
+        Retrieve a product image by they id.
+        """
+        return ProductImagesModel.query.get(product_image_id)
 
     @staticmethod
     def find_all_products_image():

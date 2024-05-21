@@ -7,7 +7,7 @@ from app.repositories import CategoryRepository
 from . import categories
 
 
-@categories.route("/delete/<int:category_id>/")
+@categories.route("/delete/<int:category_id>")
 class DeleteProduct(Resource):
     category_repository = CategoryRepository()
 
