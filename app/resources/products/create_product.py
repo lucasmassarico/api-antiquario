@@ -6,10 +6,13 @@ from app.models.product import ProductModel
 from app.repositories import ProductRepository
 
 from . import products
-from. args_products import args_for_products_endpoint as args_params
+from .args_products import args_for_products_endpoint as args_params
+from app.resources.utils import allowed_file, PRODUCT_UPLOAD_PATH
+
+import os
 
 
-@products.route("/create/")
+@products.route("/create")
 class CreateProduct(Resource):
     product_repository = ProductRepository()
 
@@ -32,10 +35,36 @@ class CreateProduct(Resource):
         if errors:
             return {"errors": errors}, 400
 
+        # salvar thumbnail do produto
+        image_file = data['image_thumbnail_name']
+        image_filename = image_file.filename
+        file_extension = image_filename.split('.')[-1].lower()
+
+        # necessita tirar ele do dicionário do data, pois precisamos tratar o path a ser salvo
+        data.pop('image_thumbnail_name', None)
+
         product = ProductModel(**data)
+
+        if not allowed_file(image_filename):
+            return {"error": "file not allowed extension."}, 400
 
         try:
             self.product_repository.add_product(product=product)
+
+            # cria pasta do produto, sendo a pasta padrão dos produtos, "product/product_id"
+            product_folder = f"{PRODUCT_UPLOAD_PATH}/{product.id}"
+            os.makedirs(product_folder, exist_ok=True)
+
+            # adiciona a thumbnail a essa pasta
+            path = os.path.join(product_folder, f"{str(product.id)}_thumbnail.{file_extension}")
+            image_file.save(path)
+
+            relative_path = os.path.relpath(path, 'app/static/public').replace("\\", "/")
+
+            # adiciona ao data e atualiza o produto
+            data['image_thumbnail_name'] = f"public/{relative_path}"
+            self.product_repository.update_product(product=product, **data)
+
             return self.product_repository.json(product=product), 201
         except Exception as error:
             return {"error": error}, 500

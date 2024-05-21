@@ -1,6 +1,7 @@
 """
     Archive have a method to start a flask application with yours configs
 """
+import os
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -33,11 +34,11 @@ def create_app():
     blueprint = Blueprint('api', __name__)
     app.register_blueprint(blueprint)
 
-    authrorizations = {
+    authorizations = {
         'apiKey': {
             'type': 'apiKey',
             'in': 'header',
-            'name': 'Authrorization',
+            'name': 'Authorizations',
             'description': "Type in the *'Value'* input box below: **'Bearer &lt;JWT&gt;'**, where JWT is the token"
         }
     }
@@ -47,7 +48,7 @@ def create_app():
               version="0.1",
               description="Initial antique API",
               prefix="/api",
-              authrorizations=authrorizations,
+              authorizations=authorizations,
               security='apiKey')
 
     from app import resources

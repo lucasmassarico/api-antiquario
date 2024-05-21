@@ -51,7 +51,7 @@ class ProductRepository:
     @staticmethod
     def find_all_products():
         """
-        Retrive all products from the database.
+        Retrieve all products from the database.
         """
         return ProductModel.query.all()
 
@@ -62,13 +62,16 @@ class ProductRepository:
                        description: str,
                        price: float,
                        stock_quantity: int,
-                       activated: bool):
+                       activated: bool,
+                       image_thumbnail_name: str
+                       ):
         product.name = name
         product.id_category = id_category
         product.description = description
         product.price = price
         product.stock_quantity = stock_quantity
         product.activated = activated
+        product.image_thumbnail_name = image_thumbnail_name
 
         db.session.add(product)
         db.session.commit()
@@ -104,7 +107,53 @@ class ProductRepository:
             "price": product.price,
             "stock_quantity": product.stock_quantity,
             "activated": product.activated,
+            "image_thumbnail_name": product.image_thumbnail_name,
             "publication_date": str(product.publication_date.strftime("%d-%m-%Y %H:%M:%S"))
+        }
+
+
+class ProductImagesRepository:
+    """
+    ProductImagesRepository class for handling products images related database operations.
+
+    This class encapsulates methods for interacting with the database to perform operations related to product images management.
+    """
+    @staticmethod
+    def add_product_image(product_image: ProductImagesModel):
+        """
+        Add a new product image path to the database.
+        """
+        db.session.add(product_image)
+        db.session.commit()
+
+    @staticmethod
+    def find_product_image_by_product_id(product_id: int) -> ProductImagesModel:
+        """
+        Retrieve a product imagem by product ID from the database.
+        """
+        return ProductImagesModel.query.filter_by(id_product=product_id).all()
+
+    @staticmethod
+    def find_all_products_image():
+        """
+        Retrieve all products images from the database.
+        """
+        return ProductImagesModel.query.all()
+
+    @staticmethod
+    def delete_product_image(product_image: ProductImagesModel):
+        """
+        Delete a product image in database.
+        """
+        db.session.delete(product_image)
+        db.session.commit()
+
+    @staticmethod
+    def json(product_image: ProductImagesModel) -> dict:
+        return {
+            "id": product_image.id,
+            "id_product": product_image.id_product,
+            "image_path": product_image.image_path
         }
 
 

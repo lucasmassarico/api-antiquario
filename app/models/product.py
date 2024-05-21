@@ -17,6 +17,7 @@ class ProductModel(db.Model):
     price = db.Column(db.Float, default=0.0)
     stock_quantity = db.Column(db.Integer, default=1)
     activated = db.Column(db.Boolean(), default=True)
+    image_thumbnail_name = db.Column(db.Text)
     publication_date = db.Column(db.DateTime, default=datetime.now)
 
     def __repr__(self) -> str:
@@ -28,4 +29,4 @@ class ProductImagesModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     id_product = db.Column(db.Integer, db.ForeignKey('products.id', ondelete="CASCADE"), nullable=False, index=True)
-    image_url = db.Column(db.Text)
+    image_path = db.Column(db.Text)
