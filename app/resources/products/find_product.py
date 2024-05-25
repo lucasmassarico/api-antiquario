@@ -84,9 +84,6 @@ class FindProductsByCategoryId(Resource):
         try:
             products_type = self.product_repository.find_products_by_category_id(category_id=category_id)
 
-            if not products_type:
-                return {"message": "Category does not have registered products."}
-
         except Exception as error:
             return {"error": error}, 500
 

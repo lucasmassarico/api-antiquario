@@ -44,6 +44,26 @@ class FindCategoryByName(Resource):
         return {"error": "Category not found."}, 404
 
 
+@categories.route("/find/by_urlname/<string:urlname>")
+class FindCategoryByUrlName(Resource):
+    category_repository = CategoryRepository()
+
+    @categories.response(code=200, description="Category successfully found.")
+    @categories.response(code=404, description="Category not found.")
+    def get(self, urlname: str):
+        """
+        Endpoint to find a category by their name.
+        """
+        urlname = urlname.upper()
+
+        category = self.category_repository.find_category_by_url_name(url_name=urlname)
+
+        if category:
+            return self.category_repository.json(category=category), 200
+
+        return {"error": "Category not found."}, 404
+
+
 @categories.route("/find/all/")
 class FindAllCategories(Resource):
     category_repository = CategoryRepository()

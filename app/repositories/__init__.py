@@ -199,6 +199,10 @@ class CategoryRepository:
         return CategoryModel.query.filter_by(name=category_name).first()
 
     @staticmethod
+    def find_category_by_url_name(url_name: str) -> CategoryModel:
+        return CategoryModel.query.filter_by(url_name=url_name).first()
+
+    @staticmethod
     def find_all_categories():
         """
         Retrive all categories from the database.
