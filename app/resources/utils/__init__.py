@@ -1,3 +1,4 @@
+import json
 import os
 
 from dotenv import load_dotenv, find_dotenv
@@ -21,3 +22,12 @@ def allowed_file(filename):
     return '.' in filename and \
           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def type_int_list(value):
+    try:
+        values = json.loads(value)
+        if isinstance(values, list) and all(isinstance(i, int) for i in values):
+            return values
+        else:
+            raise ValueError("List must contain only integers.")
+    except json.JSONDecodeError:
+        raise ValueError("Invalid JSON format")

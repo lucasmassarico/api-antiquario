@@ -4,7 +4,7 @@ This module provides a repository class to interact with the database and perfor
 from app import db
 from app.models.product import ProductModel, ProductImagesModel
 from app.models.category import CategoryModel
-
+from sqlalchemy import not_, and_, or_
 from typing import Union
 
 
@@ -49,11 +49,32 @@ class ProductRepository:
         return ProductModel.query.filter_by(name=product_name).first()
 
     @staticmethod
-    def find_all_products():
+    def find_all_products(excluded_categories=None):
         """
-        Retrieve all products from the database.
+        Retrieve all products from the database, excluding those in excluded_categories.
         """
-        return ProductModel.query.all()
+        query = ProductModel.query
+
+        if excluded_categories:
+            query = query.filter(not_(ProductModel.id_category.in_(excluded_categories)))
+
+        return query.all()
+
+    @staticmethod
+    def full_text_search(query, excluded_categories):
+        products = db.session.query(ProductModel).filter(
+            or_(
+                ProductModel.name.ilike(f'%{query}%'),
+                ProductModel.description.ilike(f'%{query}%')
+            )
+        )
+
+        if excluded_categories:
+            products = products.filter(
+                not_(ProductModel.id_category.in_(excluded_categories))
+            )
+
+        return products.all()
 
     @staticmethod
     def update_product(product: ProductModel,

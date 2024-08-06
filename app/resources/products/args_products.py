@@ -1,6 +1,7 @@
 """
 File represents args for endpoints of PRODUCTS
 """
+from app.resources.utils import type_int_list as int_list
 from flask_restx import reqparse
 from werkzeug.datastructures import FileStorage
 
@@ -22,3 +23,13 @@ args_for_products_endpoint.add_argument(
     type=FileStorage,
     location="files"
 )
+
+args_for_find_products_endpoint = reqparse.RequestParser()
+
+args_for_find_products_endpoint.add_argument(
+    "excluded_categories",
+    type=int_list,
+    required=False,
+    help="List of categories IDS to exclude in filter. Example: [1, 2]",
+)
+args_for_find_products_endpoint.add_argument("query", type=str, required=False, help="Search query")

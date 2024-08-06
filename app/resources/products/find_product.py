@@ -4,6 +4,7 @@ This file contains Flask-RESTx resources for "get" product-related operations.
 from flask_restx import Resource
 
 from app.repositories import ProductRepository, CategoryRepository
+from .args_products import args_for_find_products_endpoint as args_params
 from . import products
 
 
@@ -46,6 +47,7 @@ class FindProductByName(Resource):
 class FindAllProducts(Resource):
     product_repository = ProductRepository()
 
+    @products.expect(args_params)
     @products.response(code=200, description="Products successfully found.")
     @products.response(code=404, description="Products not found.")
     @products.response(code=500, description="Error in server as occurred.")
@@ -53,8 +55,14 @@ class FindAllProducts(Resource):
         """
         Endpoint to find all products.
         """
+        data = args_params.parse_args()
+
         try:
-            products_types = self.product_repository.find_all_products()
+            if 'query' in data and data['query']:
+                data['query'] = data['query'].upper()
+                products_types = self.product_repository.full_text_search(data['query'], data['excluded_categories'])
+            else:
+                products_types = self.product_repository.find_all_products(data.get('excluded_categories', []))
         except Exception as error:
             return {"error": error}, 500
 

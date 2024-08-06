@@ -3,6 +3,4 @@
 __pycache__/
 migrations/*
 .venv-api/*
-instance/*
-app/static/public/products/*
 nohup.out
