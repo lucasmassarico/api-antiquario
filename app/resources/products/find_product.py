@@ -2,7 +2,6 @@
 This file contains Flask-RESTx resources for "get" product-related operations.
 """
 from flask_restx import Resource
-
 from app.repositories import ProductRepository, CategoryRepository
 from .args_products import args_for_find_products_endpoint as args_params
 from . import products

@@ -18,7 +18,7 @@ class FindProductImage(Resource):
 
         images_paths = self.product_images_repository.find_product_image_by_product_id(product_id=product_id)
         if not images_paths:
-            return {"message": "No Images registered in product."}, 200
+            return {"message": "No Images registered in product."}, 404
 
         image_paths_list = [{"id": image.id, "image_path": image.image_path} for image in images_paths]
 

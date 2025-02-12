@@ -1,13 +1,11 @@
-"""
-This file contains Flask-RESTx resources for "put" categories-related operations.
-"""
+import unicodedata
 from flask_restx import Resource
 from app.repositories import CategoryRepository
 from . import categories
 from . args_categories import args_for_categories_endpoint as args_params
 
 
-@categories.route("/update/<int:category_id>/")
+@categories.route("/update/<int:category_id>")
 class UpdateCategory(Resource):
     category_repository = CategoryRepository()
 
@@ -21,22 +19,31 @@ class UpdateCategory(Resource):
         Endpoint to update an existing category by id.
         """
         data = args_params.parse_args()
+
+        # Formata o nome para maiúsculas, similar à criação
         data['name'] = data['name'].upper()
 
+        # Geração de 'url_name', como na criação
+        url_name = "".join(c for c in unicodedata.normalize('NFD', data['name']) if unicodedata.category(c) != 'Mn')
+        url_name = url_name.replace(' ', '_').replace(',', '')
+        data['url_name'] = url_name
+
+        # Verifica se o nome já existe em outra categoria
         category_by_name = self.category_repository.find_category_by_name(category_name=data['name'])
-        if category_by_name:
-            if category_by_name.id != category_id:
-                return {"error": f"The name '{data['name']}' are registered in another category."}, 409
+        if category_by_name and category_by_name.id != category_id:
+            return {"error": f"The category name '{data['name']}' is registered in another category."}, 409
 
+        # Verifica se a categoria com o 'category_id' existe
         category_found = self.category_repository.find_category_by_id(category_id=category_id)
+        if not category_found:
+            return {"error": f"Category '{category_id}' not registered."}, 404
 
-        if category_found:
-            try:
-                self.category_repository.update_category(category=category_found, **data)
+        try:
+            # Atualiza a categoria existente
+            self.category_repository.update_category(category=category_found, **data)
 
-                return self.category_repository.json(category=category_found), 200
+            # Retorna a resposta JSON com os dados atualizados
+            return self.category_repository.json(category=category_found), 200
 
-            except Exception as error:
-                return {"error": error}, 500
-
-        return {"error": f"Category '{category_id}' not registered."}, 404
+        except Exception as error:
+            return {"error": str(error)}, 500

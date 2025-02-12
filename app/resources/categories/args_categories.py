@@ -7,3 +7,4 @@ args_for_categories_endpoint = reqparse.RequestParser()
 
 
 args_for_categories_endpoint.add_argument("name", type=str, required=True, help="The name of the category.")
+args_for_categories_endpoint.add_argument("discount", required=True, type=float, help="The discount of the category")

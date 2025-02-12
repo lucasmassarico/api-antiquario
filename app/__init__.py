@@ -8,8 +8,9 @@ from flask_migrate import Migrate
 from flask_restx import Api
 from flask_cors import CORS
 from werkzeug.middleware.proxy_fix import ProxyFix
-
 from app.config import Config
+
+from app.jwt_manager import jwt
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -33,6 +34,24 @@ def create_app():
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
     blueprint = Blueprint('api', __name__)
     app.register_blueprint(blueprint)
+    jwt.init_app(app)
+
+    @app.cli.command()
+    def create_admin_user():
+        from app.models.user import UserModel
+        from werkzeug.security import generate_password_hash
+
+        admin = UserModel.query.filter_by(email="lucasmassarico1@gmail.com").first()
+        if admin:
+            return {"error": f"email of default admin has been created."}
+        admin = UserModel(
+            name="admin",
+            email="lucasmassarico1@gmail.com",
+            password=generate_password_hash("Admin@112233"),
+            access_role=99
+        )
+        db.session.add(admin)
+        db.session.commit()
 
     authorizations = {
         'apiKey': {
